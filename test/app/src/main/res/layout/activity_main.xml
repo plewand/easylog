@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context="com.codigine.easylogtest.MainActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+        <!-- Global params -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/global_parameters" />
+
+        <CheckBox
+            android:id="@+id/global_logcat_enabled"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/vert_margin"
+            android:text="@string/logcat_logging_enabled" />
+
+        <CheckBox
+            android:id="@+id/global_file_enabled"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/vert_margin"
+            android:text="@string/file_logging_enabled" />
+
+        <!-- Common file logger -->
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/logcat_common_file" />
+
+        <CheckBox
+            android:id="@+id/common_log_logcat_enabled"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/vert_margin"
+            android:text="@string/logcat_logging_enabled" />
+
+        <CheckBox
+            android:id="@+id/common_log_file_enabled"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/vert_margin"
+            android:text="@string/file_logging_enabled" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/common_log_write"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/vert_margin"
+                android:layout_weight="1"
+                android:text="@string/log" />
+
+            <Button
+                android:id="@+id/common_log_clear"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/vert_margin"
+                android:layout_weight="2"
+                android:text="@string/clear" />
+        </LinearLayout>
+
+        <!-- Own file logger -->
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/logcat_and_file" />
+
+        <CheckBox
+            android:id="@+id/custom_log_logcat_enabled"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/vert_margin"
+            android:text="@string/logcat_logging_enabled" />
+
+        <CheckBox
+            android:id="@+id/custom_log_file_enabled"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/vert_margin"
+            android:text="@string/file_logging_enabled" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/custom_log_write"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/vert_margin"
+                android:layout_weight="1"
+                android:text="@string/log" />
+
+            <Button
+                android:id="@+id/custom_log_clear"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/vert_margin"
+                android:layout_weight="2"
+                android:text="@string/clear" />
+        </LinearLayout>
+    </LinearLayout>
+</ScrollView>
+

@@ -1,0 +1,77 @@
+apply plugin: 'java'
+apply plugin: 'maven-publish'
+apply plugin: 'groovy'
+
+dependencies {
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile 'com.squareup:javapoet:1.9.0'
+    compile 'org.aspectj:aspectjtools:1.8.9'
+    compile 'org.aspectj:aspectjrt:1.8.9'
+    testCompile(
+            'junit:junit:4.12',
+            'org.codehaus.groovy:groovy-all:2.4.4',
+            'org.spockframework:spock-core:1.0-groovy-2.4',
+            'com.google.testing.compile:compile-testing:0.12',
+    )
+}
+
+sourceCompatibility = "1.7"
+targetCompatibility = "1.7"
+
+group = 'com.codigine.easylog'
+version = '1.0.0'
+
+publishing {
+    publications {
+        mavenCustom(MavenPublication) {
+            groupId group
+            artifactId 'annotation-processor'
+            from components.java
+
+            pom.withXml {
+                def deps = asNode().dependencies
+                deps.get(0).children().removeAll {
+                    def artifactName = it.artifactId.get(0).value().toString()
+                    if(artifactName == "[annotation]") {
+                        println "Removing dependency: " + artifactName
+                        return true;
+                    }else{
+                        println "Keeping dependency: " + artifactName
+                        return false;
+                    }
+                }
+
+                deps.'*'.findAll() {
+                    println "Included dependency: " + it.artifactId.get(0).value()
+                }
+            }
+
+        }
+    }
+}
+
+sourceSets {
+    test {
+        resources.srcDirs = ["src/test/resources"]
+    }
+
+    main {
+        java {
+            srcDirs += 'src/main/../../../annotation/src/main'
+        }
+    }
+}
+
+task copyTestResources(type: Copy) {
+    from "${projectDir}/src/test/resources"
+    into "${buildDir}/classes/test"
+}
+processTestResources.dependsOn copyTestResources
+
+tasks.withType(Test) {
+    testLogging {
+        exceptionFormat "full"
+        events "started", "skipped", "passed", "failed"
+        showStandardStreams true
+    }
+}

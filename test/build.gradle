@@ -1,0 +1,25 @@
+// Top-level build file where you can add configuration options common to all sub-projects/modules.
+
+buildscript {
+    repositories {
+        jcenter()
+        mavenLocal()
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:2.3.3'
+        classpath 'com.codigine:easylog-plugin:1.0.0'
+        classpath 'org.codehaus.groovy:gradle-groovy-android-plugin:0.3.6'
+    }
+}
+
+allprojects {
+    repositories {
+        jcenter()
+        //Important for local library publishing
+        mavenLocal()
+    }
+}
+
+task clean(type: Delete) {
+    delete rootProject.buildDir
+}

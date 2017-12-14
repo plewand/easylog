@@ -1,0 +1,1 @@
+include ':easylog-plugin', ':library', ':annotation-processor', ':annotation'

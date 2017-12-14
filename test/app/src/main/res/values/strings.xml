@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">EasyLogTest</string>
+    <string name="logcat_common_file">Logcat and common file:</string>
+    <string name="logging_enabled">logging enabled</string>
+    <string name="logcat_and_file">Logcat and own file:</string>
+    <string name="logcat_logging_enabled">Logcat logging enabled</string>
+    <string name="file_logging_enabled">File logging enabled</string>
+    <string name="log">Log</string>
+    <string name="global_parameters">Global parameters:</string>
+    <string name="clear">Clear</string>
+</resources>
