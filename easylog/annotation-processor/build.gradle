@@ -1,6 +1,21 @@
 apply plugin: 'java'
 apply plugin: 'maven-publish'
 apply plugin: 'groovy'
+apply plugin: 'maven'
+apply plugin: 'signing'
+
+
+def projectPropertiesFile = rootProject.file("../../proj.properties")
+
+def projectProperties = new Properties()
+
+projectProperties.load(new FileInputStream(projectPropertiesFile))
+
+ext."signing.keyId"=projectProperties['gpg_key_id']
+ext."signing.password"=projectProperties['gpg_password']
+ext."signing.secretKeyRingFile"=projectProperties['gpg_secret_keyring_file']
+ext.projectProperties = projectProperties
+
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
@@ -19,7 +34,6 @@ sourceCompatibility = "1.7"
 targetCompatibility = "1.7"
 
 group = 'com.codigine.easylog'
-version = '1.0.0'
 
 publishing {
     publications {
@@ -27,6 +41,7 @@ publishing {
             groupId group
             artifactId 'annotation-processor'
             from components.java
+            version "${projectProperties['artifact_version']}"
 
             pom.withXml {
                 def deps = asNode().dependencies
@@ -73,5 +88,80 @@ tasks.withType(Test) {
         exceptionFormat "full"
         events "started", "skipped", "passed", "failed"
         showStandardStreams true
+    }
+}
+
+
+def isReleaseBuild() {
+    return project.ext.projectProperties['artifact_version'].contains("SNAPSHOT") == false
+}
+
+afterEvaluate { project ->
+    uploadArchives {
+        repositories {
+            mavenDeployer {
+                beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
+
+                pom.groupId = 'com.codigine.easylog'
+                pom.artifactId = 'annotation-processor'
+                pom.version = projectProperties['artifact_version']
+
+                repository(url: projectProperties['sonatype_release_url']) {
+                    authentication(userName: projectProperties['sonatype_user'], password: projectProperties['sonatype_password'])
+                }
+                snapshotRepository(url: projectProperties['sonatype_snapshot_url']) {
+                    authentication(userName: projectProperties['sonatype_user'], password: projectProperties['sonatype_password'])
+                }
+
+                pom.project {
+                    name 'easylog'
+                    packaging 'jar'
+                    description 'easylog library plugin'
+                    url 'https://github.com/plewand/easylog'
+
+                    scm {
+                        url 'https://github.com/plewand/easylog'
+                        connection 'scm:git@github.com:plewand/easylog.git'
+                        developerConnection 'scm:git@github.com:plewand/easylog.git'
+                    }
+                    licenses {
+                        license {
+                            name 'The Apache Software License, Version 2.0'
+                            url 'http://www.apache.org/license/LICENSE-2.0.txt'
+                            distribution 'repo'
+                        }
+                    }
+                    developers {
+                        developer {
+                            id 'plewand'
+                            name 'Paweł Lewandowski'
+                            email 'plewand@o2.pl'
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    signing {
+        required { isReleaseBuild() && gradle.taskGraph.hasTask("uploadArchives") }
+        sign configurations.archives
+    }
+
+    task javadocJar(type: Jar, dependsOn: javadoc) {
+        classifier = 'javadoc'
+        from tasks.javadoc.destinationDir
+    }
+
+    task sourcesJar(type: Jar) {
+        from sourceSets.main.allSource
+        classifier = 'sources'
+    }
+
+    artifacts {
+        archives jar
+
+        archives javadocJar
+        archives sourcesJar
     }
 }

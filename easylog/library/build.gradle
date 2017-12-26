@@ -1,12 +1,24 @@
 apply plugin: 'com.android.library'
 apply plugin: 'maven-publish'
+apply plugin: 'maven'
+apply plugin: 'signing'
 
-def keystorePropertiesFile = rootProject.file("keystore.properties")
+def projectPropertiesFile = rootProject.file("../../proj.properties")
 
-def keystoreProperties = new Properties()
+def projectProperties = new Properties()
 
-keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
+projectProperties.load(new FileInputStream(projectPropertiesFile))
 
+println("projectProperties['sonatype_user'] "+projectProperties['sonatype_user'])
+println("adad " + projectProperties['sonatype_password'])
+println("projectProperties['sonatype_release_url'] " + projectProperties['sonatype_release_url'])
+println("projectProperties['sonatype_snapshot_url']"+projectProperties['sonatype_snapshot_url'])
+println("ver "+ "${projectProperties['artifact_version']}")
+
+ext."signing.keyId"=projectProperties['gpg_key_id']
+ext."signing.password"=projectProperties['gpg_password']
+ext."signing.secretKeyRingFile"=projectProperties['gpg_secret_keyring_file']
+ext.projectProperties = projectProperties
 
 android {
     compileSdkVersion 25
@@ -37,16 +49,16 @@ android {
 
     signingConfigs {
         debug {
-            keyAlias keystoreProperties['keyAlias']
-            keyPassword keystoreProperties['keyPassword']
-            storeFile file(keystoreProperties['storeFile'])
-            storePassword keystoreProperties['storePassword']
+            keyAlias projectProperties['key_alias']
+            keyPassword projectProperties['keystore_password']
+            storeFile file(projectProperties['keystore_file'])
+            storePassword projectProperties['keystore_password']
         }
         release {
-            keyAlias keystoreProperties['keyAlias']
-            keyPassword keystoreProperties['keyPassword']
-            storeFile file(keystoreProperties['storeFile'])
-            storePassword keystoreProperties['storePassword']
+            keyAlias projectProperties['key_alias']
+            keyPassword projectProperties['keystore_password']
+            storeFile file(projectProperties['keystore_file'])
+            storePassword projectProperties['keystore_password']
         }
     }
 
@@ -66,7 +78,6 @@ apply plugin: 'groovyx.android'
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile project(':annotation')
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
@@ -80,12 +91,88 @@ task sourceJar(type: Jar) {
     classifier "source"
 }
 
+def isReleaseBuild() {
+    return project.ext.projectProperties['artifact_version'].contains("SNAPSHOT") == false
+}
+
+afterEvaluate { project ->
+    uploadArchives {
+        repositories {
+            mavenDeployer {
+                beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
+
+                pom.groupId = 'com.codigine'
+                pom.artifactId = 'easylog'
+                pom.version = projectProperties['artifact_version']
+
+                repository(url: projectProperties['sonatype_release_url']) {
+                    authentication(userName: projectProperties['sonatype_user'], password: projectProperties['sonatype_password'])
+                }
+                snapshotRepository(url: projectProperties['sonatype_snapshot_url']) {
+                    authentication(userName: projectProperties['sonatype_user'], password: projectProperties['sonatype_password'])
+                }
+
+                pom.project {
+                    name 'easylog'
+                    packaging 'aar'
+                    description 'easylog library'
+                    url 'https://github.com/plewand/easylog'
+
+                    scm {
+                        url 'https://github.com/plewand/easylog'
+                        connection 'scm:git@github.com:plewand/easylog.git'
+                        developerConnection 'scm:git@github.com:plewand/easylog.git'
+                    }
+                    licenses {
+                        license {
+                            name 'The Apache Software License, Version 2.0'
+                            url 'http://www.apache.org/license/LICENSE-2.0.txt'
+                            distribution 'repo'
+                        }
+                    }
+                    developers {
+                        developer {
+                            id 'plewand'
+                            name 'Paweł Lewandowski'
+                            email 'plewand@o2.pl'
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    signing {
+        required { isReleaseBuild() && gradle.taskGraph.hasTask("uploadArchives") }
+        sign configurations.archives
+    }
+
+    task androidJavadocs(type: Javadoc) {
+        source = android.sourceSets.main
+    }
+
+    task androidJavadocsJar(type: Jar, dependsOn: androidJavadocs) {
+        classifier = 'javadoc'
+        from androidJavadocs.destinationDir
+    }
+
+    task androidSourcesJar(type: Jar) {
+        classifier = 'sources'
+        from android.sourceSets.main.java.sourceFiles
+    }
+
+    artifacts {
+        archives androidSourcesJar
+    }
+}
+
+
 publishing {
     publications {
         maven(MavenPublication) {
             groupId 'com.codigine'
             artifactId 'easylog'
-            version '1.0.0'
+            version "${projectProperties['artifact_version']}"
             artifact(sourceJar)
             artifact("$buildDir/outputs/aar/library-release.aar")
         }

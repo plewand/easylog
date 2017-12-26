@@ -5,8 +5,9 @@ buildscript {
     repositories {
         google()
         jcenter()
-        //Important for local library publishing
-        mavenLocal()
+        mavenCentral()
+        //Uncomment for easylog local build and publishing
+        //mavenLocal()
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:3.0.1'
@@ -22,8 +23,6 @@ allprojects {
     repositories {
         google()
         jcenter()
-        //Important for local library publishing
-        mavenLocal()
     }
 }
 

@@ -43,12 +43,14 @@ public class EasyLogPlugin implements Plugin<Project> {
             variants = project.android.libraryVariants
         }
 
+        def pluginVersion = EasyLogPlugin.class.getPackage().getImplementationVersion()
+
         project.dependencies.add('compile', 'org.aspectj:aspectjrt:1.8.9')
-        project.dependencies.add('compile', 'com.codigine:easylog:1.0.0')
+        project.dependencies.add('compile', "com.codigine:easylog:$pluginVersion")
         if (hasKotlin) {
-            project.dependencies.add('kapt', 'com.codigine.easylog:annotation-processor:1.0.0')
+            project.dependencies.add('kapt', "com.codigine.easylog:annotation-processor:$pluginVersion")
         } else {
-            project.dependencies.add('annotationProcessor', 'com.codigine.easylog:annotation-processor:1.0.0')
+            project.dependencies.add('annotationProcessor', "com.codigine.easylog:annotation-processor:$pluginVersion")
         }
 
         variants.all { variant ->
@@ -83,6 +85,8 @@ public class EasyLogPlugin implements Plugin<Project> {
                     log.info("Has Kotlin: " + (hasKotlin ? true : false))
                     log.info("Kotlin classes: " + getKotlinClassesDirPath(project, variant.name))
                     log.info("Source sets: " + project.android.sourceSets.main.java.srcDirs)
+
+                    log.info("pluginVersion: " +EasyLogPlugin.class.getPackage().getImplementationVersion())
 
                     MessageHandler handler = new MessageHandler(true);
                     new Main().run(args, handler)
