@@ -22,11 +22,6 @@ import butterknife.ButterKnife;
 import butterknife.OnCheckedChanged;
 import butterknife.OnClick;
 
-// TODO: Nexus
-// TODO: String format for file logging
-// TODO: easylog/keystore.properites to gitignore
-// TODO: Change using local maven to sonatype
-// TODO: Clear logs, mainly plugins, test kotlin code
 public class MainActivity extends AppCompatActivity {
     private static final String ANDROID_LOG = "NoWrapper";
 

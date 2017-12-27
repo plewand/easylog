@@ -1,6 +1,6 @@
 ## EasyLog ##
 
-This library allows to simplify logging for Android applications. It wraps default Log funcitonality and adds ability to log to pemanent memory.
+This library allows to simplify logging for Android applications. It wraps default Log funcitonality and adds ability to log to permanent memory.
 
 ### Features ### 
 * Annotation based logger injection

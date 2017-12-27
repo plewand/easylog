@@ -16,7 +16,6 @@ android {
 
     }
 
-    //TODO: Check it if necessary
     buildTypes {
         release {
             minifyEnabled false
