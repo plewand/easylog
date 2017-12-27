@@ -33,6 +33,12 @@ Apply plugin to modules build.gradle files:
 apply plugin: 'easylog'
 ```
 
+Add the below permission to AndroidManifest.xml:
+
+```
+<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+```
+
 Configure logging by adding clause to module build.gradle file.
 
 * commonLoggingDirectory - default directory added to every log, also common file
