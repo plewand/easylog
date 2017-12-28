@@ -9,7 +9,7 @@ buildscript {
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:2.3.3'
-        classpath 'com.codigine:easylog-plugin:1.0.0'
+        classpath 'com.codigine:easylog-plugin:1.0.1'
         classpath 'org.codehaus.groovy:gradle-groovy-android-plugin:0.3.6'
     }
 }
@@ -17,6 +17,8 @@ buildscript {
 allprojects {
     repositories {
         jcenter()
+        //Uncomment for easylog local build and publishing
+        //mavenLocal()
     }
 }
 

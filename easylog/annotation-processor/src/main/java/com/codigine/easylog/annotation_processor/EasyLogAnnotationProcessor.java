@@ -1,6 +1,7 @@
 package com.codigine.easylog.annotation_processor;
 
 import com.codigine.easylog.EasyLog;
+import com.squareup.javapoet.TypeSpec;
 
 import java.io.IOException;
 import java.util.HashSet;
@@ -49,7 +50,9 @@ public class EasyLogAnnotationProcessor extends AbstractProcessor {
             try {
                 AnnotatedElem elem = new AnnotatedElem((VariableElement) element);
                 messager.printMessage(Diagnostic.Kind.OTHER, "typeElement " + elem.getClassElement().getQualifiedName());
-                GeneratedCodeWriter.save(filer, elementUtils, elem, AspectGenerator.generateCode(elem));
+                TypeSpec genrated = AspectGenerator.generateCode(elem);
+                messager.printMessage(Diagnostic.Kind.OTHER, "Generated: " + genrated);
+                GeneratedCodeWriter.save(filer, elementUtils, elem, genrated);
             } catch (IOException | IllegalArgumentException e) {
                 messager.printMessage(Diagnostic.Kind.ERROR, "Error while processing annotation: " + e);
                 return true;

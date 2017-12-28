@@ -21,7 +21,7 @@ buildscript {
     ...
     dependencies {
         ...
-        classpath 'com.codigine:easylog-plugin:1.0.0'
+        classpath 'com.codigine:easylog-plugin:1.0.1'
         ..
     }
 }

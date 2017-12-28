@@ -11,7 +11,6 @@ import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 
 import javax.lang.model.element.Modifier;
-import javax.lang.model.element.Name;
 
 
 public class AspectGenerator {
@@ -65,7 +64,7 @@ public class AspectGenerator {
         EasyLog annotation = annotatedElem.getAnnotation();
         return String.format(template,
                 annotatedElem.getClassElement().getQualifiedName(),
-                annotatedElem.getFieldElem().getSimpleName(),
+                annotatedElem.getFieldElem().getSimpleName().toString().replaceAll("\\$", "\\$\\$"),
                 annotation.tag() == null || annotation.tag().trim().isEmpty() ? annotatedElem.getClassElement().getSimpleName() : annotation.tag(),
                 annotation.fileLogPath(),
                 annotation.logcatEnabled(),
